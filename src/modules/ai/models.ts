@@ -2,7 +2,7 @@ import { InferSchemaType, Model, Schema, model, models } from 'mongoose'
 
 const providerMetadataSchema = new Schema(
   {
-    provider: { type: String, enum: ['elice'], required: true },
+    provider: { type: String, enum: ['elice', 'google', 'openrouter'], required: true },
     model: { type: String, required: true },
     requestId: { type: String },
     promptTokens: { type: Number, default: 0, min: 0 },
@@ -198,7 +198,7 @@ const aiUsageSchema = new Schema(
       ],
       required: true,
     },
-    provider: { type: String, enum: ['elice'], default: 'elice' },
+    provider: { type: String, enum: ['elice', 'google', 'openrouter'], default: 'elice' },
     model: { type: String, required: true },
     requestId: { type: String },
     promptTokens: { type: Number, default: 0, min: 0 },
@@ -249,7 +249,7 @@ export const AiUsage =
   model<AiUsageShape>('AiUsage', aiUsageSchema)
 
 export const toStoredMetadata = (metadata: {
-  provider: 'elice' | 'google'
+  provider: 'elice' | 'google' | 'openrouter'
   model: string
   requestId?: string
   usage: { promptTokens: number; completionTokens: number; cachedPromptTokens: number }

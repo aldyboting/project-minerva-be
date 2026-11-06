@@ -4,6 +4,7 @@ import { AppError } from '../../../lib/errors'
 import { IeltsAiEvaluation, toStoredMetadata } from '../models'
 import { runPaidAiOperation } from '../paid-operation'
 import { recordCompletedUsage, recordFailedUsage } from '../usage'
+import { activeChatModel, activeTranscriptionModel } from '../provider'
 import { throwRouteError, validateAudio, type AiRouteDependencies } from './shared'
 
 const withoutMetadata = <T extends { metadata: unknown }>(value: T): Omit<T, 'metadata'> => {
@@ -123,7 +124,7 @@ export const createIeltsAiRoutes = ({ getAi }: AiRouteDependencies) =>
           await recordFailedUsage({
             userId,
             operation: 'ielts_speaking',
-            model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+            model: activeChatModel(),
             error,
             audioSeconds: durationSeconds,
           })
@@ -228,7 +229,7 @@ export const createIeltsAiRoutes = ({ getAi }: AiRouteDependencies) =>
           await recordFailedUsage({
             userId,
             operation: 'ielts_writing',
-            model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+            model: activeChatModel(),
             error,
           })
           return throwRouteError(error)
@@ -275,7 +276,7 @@ export const createIeltsAiRoutes = ({ getAi }: AiRouteDependencies) =>
             await recordFailedUsage({
               userId,
               operation: 'transcription',
-              model: process.env.ELICE_WHISPER_MODEL || 'whisper-large-v3',
+              model: activeTranscriptionModel(),
               error,
               audioSeconds: body.durationSeconds,
             })
@@ -296,7 +297,7 @@ export const createIeltsAiRoutes = ({ getAi }: AiRouteDependencies) =>
             await recordFailedUsage({
               userId,
               operation: 'ielts_speaking',
-              model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+              model: activeChatModel(),
               error,
               audioSeconds: body.durationSeconds,
             })

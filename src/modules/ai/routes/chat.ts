@@ -5,6 +5,7 @@ import { AppError } from '../../../lib/errors'
 import { AiChatMessage, AiChatThread, toStoredMetadata } from '../models'
 import type { ChatMessageInput } from '../types'
 import { recordCompletedUsage, recordFailedUsage } from '../usage'
+import { activeChatModel } from '../provider'
 import { runPaidAiOperation } from '../paid-operation'
 import { buildChatContext, throwRouteError, type AiRouteDependencies } from './shared'
 
@@ -154,7 +155,7 @@ export const createChatRoutes = ({ getAi }: AiRouteDependencies) =>
           await recordFailedUsage({
             userId,
             operation: 'chat',
-            model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+            model: activeChatModel(),
             error,
           })
           return throwRouteError(error)

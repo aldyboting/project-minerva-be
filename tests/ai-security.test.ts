@@ -133,7 +133,7 @@ describe("Phase 3: AI Security and LLM Integration Stability", () => {
     
     // Must throw AI_INVALID_RESPONSE instead of looping infinitely
     // The parser throws an AiError which is re-thrown after max iterations
-    expect(promise).rejects.toThrow("Elice returned an invalid response");
+    expect(promise).rejects.toThrow("The AI provider returned an invalid response");
   });
 
   it("RAG Poisoning & Cross-Tenant Leakage: should prevent querying another user's MongoDB records via context", async () => {

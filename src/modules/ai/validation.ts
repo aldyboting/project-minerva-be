@@ -16,7 +16,7 @@ type JsonRecord = Record<string, unknown>
 
 function invalidResponse(message: string): never {
   throw new AiError({
-    message: `Elice returned an invalid response: ${message}`,
+    message: `The AI provider returned an invalid response: ${message}`,
     code: 'AI_INVALID_RESPONSE',
     status: 502,
     retryable: true,

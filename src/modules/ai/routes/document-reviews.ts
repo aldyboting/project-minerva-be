@@ -7,6 +7,7 @@ import { Document } from '../../../models/Document'
 import { DocumentAiReview, toStoredMetadata } from '../models'
 import { runPaidAiOperation } from '../paid-operation'
 import { recordCompletedUsage, recordFailedUsage } from '../usage'
+import { activeChatModel } from '../provider'
 import {
   resolveScholarship,
   scholarshipContext,
@@ -149,7 +150,7 @@ export const createDocumentReviewRoutes = ({ getAi }: AiRouteDependencies) =>
           await recordFailedUsage({
             userId,
             operation: 'document_review',
-            model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+            model: activeChatModel(),
             error,
           })
           return throwRouteError(error)
@@ -224,7 +225,7 @@ export const createDocumentReviewRoutes = ({ getAi }: AiRouteDependencies) =>
           await recordFailedUsage({
             userId,
             operation: 'document_refine',
-            model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+            model: activeChatModel(),
             error,
           })
           return throwRouteError(error)
@@ -290,7 +291,7 @@ export const createDocumentReviewRoutes = ({ getAi }: AiRouteDependencies) =>
           await recordFailedUsage({
             userId,
             operation: 'document_consult',
-            model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+            model: activeChatModel(),
             error,
           })
           return throwRouteError(error)

@@ -23,7 +23,7 @@ export interface ProviderUsage {
 }
 
 export interface ProviderMetadata {
-  provider: 'elice' | 'google'
+  provider: 'elice' | 'google' | 'openrouter'
   model: string
   requestId?: string
   usage: ProviderUsage
