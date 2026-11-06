@@ -1,6 +1,7 @@
 import type { AiOperation, ProviderMetadata } from './types'
 import { AiUsage, toStoredMetadata } from './models'
 import { AiError } from './errors'
+import { activeAiProvider } from './provider'
 
 export const recordCompletedUsage = async (input: {
   userId: string
@@ -41,7 +42,7 @@ export const recordFailedUsage = async (input: {
     await AiUsage.create({
       userId: input.userId,
       operation: input.operation,
-      provider: 'elice',
+      provider: activeAiProvider(),
       model: input.model,
       audioSeconds: input.audioSeconds,
       status: 'failed',

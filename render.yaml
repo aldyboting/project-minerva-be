@@ -32,6 +32,12 @@ services:
         sync: false
       - key: GOOGLE_REDIRECT_URI
         sync: false
+      - key: AI_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_CHAT_MODEL
+        value: openai/gpt-5.6-terra
       - key: ELICE_API_KEY
         sync: false
       - key: ELICE_TERRA_BASE_URL

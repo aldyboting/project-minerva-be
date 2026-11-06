@@ -35,3 +35,30 @@ liveWithAudio(
   },
   180_000,
 )
+
+const liveOpenRouter = process.env.RUN_OPENROUTER_SMOKE_TESTS === 'true' ? it : it.skip
+
+liveOpenRouter(
+  'completes a minimal live chat request through OpenRouter',
+  async () => {
+    const { createOpenRouterChatFromEnv } = await import('./adapters/openrouter')
+    const result = await createOpenRouterChatFromEnv().complete({
+      messages: [{ role: 'user', content: 'Reply with exactly: OK' }],
+      reasoningEffort: 'none',
+      maxCompletionTokens: 16,
+    })
+    expect(result.content.trim()).toBe('OK')
+    expect(result.metadata.provider).toBe('openrouter')
+  },
+  180_000,
+)
+
+liveOpenRouter(
+  'creates a short live voice clip through OpenRouter',
+  async () => {
+    const { createOpenRouterSpeechFromEnv } = await import('./adapters/openrouter')
+    const result = await createOpenRouterSpeechFromEnv().synthesize({ text: 'Hello from Minerva.', language: 'a' })
+    expect(result.dataUrl.startsWith('data:audio/')).toBe(true)
+  },
+  180_000,
+)

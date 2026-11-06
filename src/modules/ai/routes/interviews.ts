@@ -4,6 +4,7 @@ import { AppError } from '../../../lib/errors'
 import { InterviewSession, toStoredMetadata } from '../models'
 import { runPaidAiOperation } from '../paid-operation'
 import { recordCompletedUsage, recordFailedUsage } from '../usage'
+import { activeChatModel, activeTranscriptionModel } from '../provider'
 import {
   resolveScholarship,
   throwRouteError,
@@ -131,7 +132,7 @@ export const createInterviewRoutes = ({ getAi }: AiRouteDependencies) =>
           await recordFailedUsage({
             userId,
             operation: 'interview_questions',
-            model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+            model: activeChatModel(),
             error,
           })
           return throwRouteError(error)
@@ -290,7 +291,7 @@ export const createInterviewRoutes = ({ getAi }: AiRouteDependencies) =>
             await recordFailedUsage({
               userId,
               operation: 'transcription',
-              model: process.env.ELICE_WHISPER_MODEL || 'whisper-large-v3',
+              model: activeTranscriptionModel(),
               error,
               audioSeconds: durationSeconds,
             })
@@ -314,7 +315,7 @@ export const createInterviewRoutes = ({ getAi }: AiRouteDependencies) =>
             await recordFailedUsage({
               userId,
               operation: 'interview_answer',
-              model: process.env.ELICE_TERRA_MODEL || 'gpt-5.6-terra',
+              model: activeChatModel(),
               error,
               audioSeconds: durationSeconds,
             })

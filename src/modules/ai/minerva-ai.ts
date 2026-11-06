@@ -2,6 +2,12 @@ import { createEliceKokoroFromEnv } from './adapters/elice-kokoro'
 import { createGoogleWaveNetFromEnv } from './adapters/google-wavenet'
 import { createEliceTerraFromEnv } from './adapters/elice-terra'
 import { createEliceWhisperFromEnv } from './adapters/elice-whisper'
+import {
+  createOpenRouterChatFromEnv,
+  createOpenRouterSpeechFromEnv,
+  createOpenRouterTranscriptionFromEnv,
+} from './adapters/openrouter'
+import { activeAiProvider, defaultSpeechVoice as configuredSpeechVoice, useGoogleSpeech } from './provider'
 import { AiError } from './errors'
 import {
   documentConsultSchema,
@@ -239,7 +245,7 @@ export class MinervaAiModule implements MinervaAI {
         const review = parseDocumentReview(responseContent, metadata)
         if (review.suggestions.some((suggestion) => !content.includes(suggestion.originalText))) {
           throw new AiError({
-            message: 'Elice returned an invalid response: a suggested excerpt was not present in the document.',
+            message: 'The AI provider returned an invalid response: a suggested excerpt was not present in the document.',
             code: 'AI_INVALID_RESPONSE',
             status: 502,
             retryable: true,
@@ -299,7 +305,7 @@ export class MinervaAiModule implements MinervaAI {
         const missing = refine.changes.filter((change) => !documentContainsExcerpt(content, change.originalText))
         if (missing.length) {
           throw new AiError({
-            message: 'Elice returned an invalid response: a refine excerpt was not present in the document.',
+            message: 'The AI provider returned an invalid response: a refine excerpt was not present in the document.',
             code: 'AI_INVALID_RESPONSE',
             status: 502,
             retryable: true,
@@ -618,9 +624,7 @@ export class MinervaAiModule implements MinervaAI {
   }
 
   defaultSpeechVoice() {
-    return process.env.TTS_PROVIDER?.trim().toLowerCase() === 'google'
-      ? (process.env.GOOGLE_TTS_VOICE?.trim() || 'en-US-Wavenet-F')
-      : 'af_heart'
+    return configuredSpeechVoice()
   }
 
   synthesizeSpeech(input: SpeechSynthesisRequest) {
@@ -732,9 +736,16 @@ export const createMinervaAI = (dependencies?: {
   terra?: TerraPort
   whisper?: WhisperPort
   kokoro?: KokoroPort
-}): MinervaAiModule =>
-  new MinervaAiModule(
-    dependencies?.terra ?? createEliceTerraFromEnv(),
-    dependencies?.whisper ?? createEliceWhisperFromEnv(),
-    dependencies?.kokoro ?? (process.env.TTS_PROVIDER?.trim().toLowerCase() === 'google' ? createGoogleWaveNetFromEnv() : createEliceKokoroFromEnv()),
+}): MinervaAiModule => {
+  const openRouter = activeAiProvider() === 'openrouter'
+  return new MinervaAiModule(
+    dependencies?.terra ?? (openRouter ? createOpenRouterChatFromEnv() : createEliceTerraFromEnv()),
+    dependencies?.whisper ?? (openRouter ? createOpenRouterTranscriptionFromEnv() : createEliceWhisperFromEnv()),
+    dependencies?.kokoro ??
+      (useGoogleSpeech()
+        ? createGoogleWaveNetFromEnv()
+        : openRouter
+          ? createOpenRouterSpeechFromEnv()
+          : createEliceKokoroFromEnv()),
   )
+}

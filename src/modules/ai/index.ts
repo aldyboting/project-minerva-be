@@ -7,3 +7,12 @@ export { EliceWhisperAdapter, createEliceWhisperFromEnv } from './adapters/elice
 
 export { EliceKokoroAdapter, createEliceKokoroFromEnv } from './adapters/elice-kokoro'
 export { GoogleWaveNetAdapter, createGoogleWaveNetFromEnv } from './adapters/google-wavenet'
+export {
+  OpenRouterChatAdapter,
+  OpenRouterSpeechAdapter,
+  OpenRouterTranscriptionAdapter,
+  createOpenRouterChatFromEnv,
+  createOpenRouterSpeechFromEnv,
+  createOpenRouterTranscriptionFromEnv,
+} from './adapters/openrouter'
+export { activeAiProvider, activeChatModel, activeTranscriptionModel } from './provider'
