@@ -7,3 +7,17 @@ compatibility_date = "2026-08-13"
 # well under Render's 750 free instance-hours cap.
 [triggers]
 crons = ["*/5 9-11,18-19 * * *", "45-59/5 17 * * *"]
+
+# Mentorship copy: keeps minerva-be-mentorship.onrender.com awake.
+# Deploy with: bunx wrangler deploy --env mentorship
+# Cron times are UTC. 23:00-15:59 UTC is 06:00-22:59 WIB.
+# 18:00 UTC keeps the 19:00 UTC reminder cron awake.
+# About 18 hours a day, about 570 hours a month, under the 750-hour cap.
+[env.mentorship]
+name = "minerva-mentorship-keep-warm"
+
+[env.mentorship.vars]
+PING_URL = "https://minerva-be-mentorship.onrender.com/api/health"
+
+[env.mentorship.triggers]
+crons = ["*/10 0-15,18,23 * * *"]
