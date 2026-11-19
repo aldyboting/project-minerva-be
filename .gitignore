@@ -50,3 +50,6 @@ yarn-error.log*
 package-lock.json
 **/*.bun
 /secrets/
+
+# Cloudflare's local build and development state
+**/.wrangler/
