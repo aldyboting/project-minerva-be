@@ -4,6 +4,16 @@ This scheduled Cloudflare Worker checks
 `https://minerva-be-mentorship.onrender.com/api/health`. It does not host the
 Minerva API or database. The API runs on Render and connects to MongoDB.
 
+## Before a mentorship test session
+
+1. Open [Wake Minerva for testing](https://github.com/aldyboting/project-minerva-be/actions/workflows/wake-mentorship.yml). Choose **Run workflow**, leave **master** selected, and confirm.
+2. Wait for a green check. The job gives Render up to five minutes to wake, checks that MongoDB is connected, and reads scholarships through the same proxy the frontend uses.
+3. Start your tests at [Minerva Mentorship](https://minerva-mentorship.pages.dev). If you take a break of 15 minutes or more and the backend goes idle, run the workflow again.
+
+GitHub requires write access to dispatch the workflow in this repository. If you have read access, run `node scripts/wake-mentorship.mjs` from a checkout with Node.js 20 or newer. It runs the same checks and requires no credentials or package installation.
+
+If the check stays red, open the [backend health link](https://minerva-be-mentorship.onrender.com/api/health) and send your mentor the failed run link. The log identifies whether backend health or the frontend scholarship request failed.
+
 ## Schedule and health checks
 
 Deploy this instance with `wrangler deploy --env mentorship` from this directory.
