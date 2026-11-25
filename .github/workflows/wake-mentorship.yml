@@ -1,0 +1,21 @@
+name: Wake Minerva for testing
+
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  wake:
+    name: Check mentorship API readiness
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Wake API and verify a scholarship query
+        run: node scripts/wake-mentorship.mjs
+      - name: Share test links
+        run: |
+          echo 'Ready for testing. [Open Minerva](https://minerva-mentorship.pages.dev) · [Check API health](https://minerva-be-mentorship.onrender.com/api/health)' >> "$GITHUB_STEP_SUMMARY"
